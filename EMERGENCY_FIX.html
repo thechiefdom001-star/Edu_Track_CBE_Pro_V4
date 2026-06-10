@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Data - Emergency Fix</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f1f5f9;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { 
+            color: #dc2626; 
+            font-size: 24px; 
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .subtitle { color: #64748b; margin-bottom: 20px; }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .card h2 {
+            font-size: 16px;
+            color: #1e293b;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .status.ok { background: #dcfce7; color: #166534; }
+        .status.error { background: #fee2e2; color: #991b1b; }
+        .status.warn { background: #fef3c7; color: #92400e; }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        button:hover { background: #1d4ed8; transform: translateY(-1px); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        button.secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        button.secondary:hover { background: #e2e8f0; }
+        button.danger {
+            background: #dc2626;
+        }
+        button.danger:hover { background: #b91c1c; }
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #2563eb;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .stat-box {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 32px;
+            font-weight: 800;
+            color: #2563eb;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        ul { margin-left: 20px; }
+        li { margin: 8px 0; }
+        code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚨 Emergency Data Recovery</h1>
+        <p class="subtitle">Fix empty student tables in School Data System</p>
+
+        <div class="card">
+            <h2>📊 Current Data Status</h2>
+            <div id="dataStatus">Checking localStorage...</div>
+            <div class="grid" id="statsGrid" style="display:none;">
+                <div class="stat-box">
+                    <div class="stat-number" id="studentCount">-</div>
+                    <div class="stat-label">Students</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="assessmentCount">-</div>
+                    <div class="stat-label">Assessments</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="paymentCount">-</div>
+                    <div class="stat-label">Payments</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🔍 Diagnostic Log</h2>
+            <pre id="diagnosticLog">Initializing...</pre>
+        </div>
+
+        <div class="card">
+            <h2>⚡ Quick Fixes</h2>
+            
+            <div class="warning-box" id="fixWarning" style="display:none;">
+                <strong>No data detected!</strong> Choose one of the options below to restore your data.
+            </div>
+
+            <div class="actions">
+                <button onclick="injectTestData()">
+                    💉 Inject 3 Test Students
+                </button>
+                <button class="secondary" onclick="clearAndReset()">
+                    🗑️ Clear & Reset All Data
+                </button>
+                <button class="danger" onclick="clearLocalStorage()">
+                    ⚠️ Clear localStorage Only
+                </button>
+            </div>
+            
+            <div class="info-box">
+                <strong>After applying a fix:</strong>
+                <ol style="margin-top: 10px; margin-left: 20px;">
+                    <li>Return to your main School Data application</li>
+                    <li>Refresh the page (Press <strong>F5</strong>)</li>
+                    <li>Students should now appear in the table</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📋 Raw Data View</h2>
+            <button class="secondary" onclick="toggleRawData()" style="margin-bottom: 15px;">
+                👁️ Show/Hide Raw Data
+            </button>
+            <pre id="rawData" style="display:none;">No data to display</pre>
+        </div>
+
+        <div class="card">
+            <h2>📖 Common Issues & Solutions</h2>
+            <ul>
+                <li><strong>Empty tables:</strong> LocalStorage may be cleared or corrupted. Use "Inject Test Data" to restore.</li>
+                <li><strong>Data disappears after sync:</strong> The auto-save feature was overwriting data. This has been fixed in the code.</li>
+                <li><strong>Students not showing:</strong> The status filter was defaulting to "Active Only". Changed to "All Students".</li>
+                <li><strong>Default data not loading:</strong> The app was only loading data if students existed. Fixed to always load.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'edutrack_cbc_data';
+        const log = [];
+        
+        function addLog(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            log.push(`[${timestamp}] ${message}`);
+            document.getElementById('diagnosticLog').textContent = log.join('\n');
+        }
+
+        function checkData() {
+            addLog('Checking localStorage...');
+            
+            const stored = localStorage.getItem(STORAGE_KEY);
+            const statusDiv = document.getElementById('dataStatus');
+            
+            if (!stored) {
+                statusDiv.innerHTML = '<span class="status error">❌ No data found in localStorage</span>';
+                document.getElementById('fixWarning').style.display = 'block';
+                addLog('ERROR: No data found in localStorage');
+                return;
+            }
+            
+            try {
+                const parsed = JSON.parse(stored);
+                addLog(`Data parsed successfully`);
+                
+                const students = parsed.students || [];
+                const assessments = parsed.assessments || [];
+                const payments = parsed.payments || [];
+                
+                document.getElementById('studentCount').textContent = students.length;
+                document.getElementById('assessmentCount').textContent = assessments.length;
+                document.getElementById('paymentCount').textContent = payments.length;
+                document.getElementById('statsGrid').style.display = 'grid';
+                
+                if (students.length === 0) {
+                    statusDiv.innerHTML = '<span class="status warn">⚠️ Data exists but NO STUDENTS found</span>';
+                    document.getElementById('fixWarning').style.display = 'block';
+                    addLog('WARNING: Data exists but students array is empty');
+                } else {
+                    statusDiv.innerHTML = `<span class="status ok">✅ Data found: ${students.length} students, ${assessments.length} assessments</span>`;
+                    addLog(`SUCCESS: Found ${students.length} students`);
+                    
+                    // Show first student sample
+                    if (students.length > 0) {
+                        addLog(`Sample student: ${students[0].name} (${students[0].grade})`);
+                    }
+                }
+                
+                // Store for raw view
+                window.currentData = parsed;
+                
+            } catch (e) {
+                statusDiv.innerHTML = '<span class="status error">❌ Corrupted data in localStorage</span>';
+                document.getElementById('fixWarning').style.display = 'block';
+                addLog(`ERROR: Data corruption - ${e.message}`);
+            }
+        }
+
+        function injectTestData() {
+            addLog('Injecting 3 test students...');
+            
+            const testData = {
+                archives: [],
+                students: [
+                    { 
+                        id: '1', 
+                        name: 'John Kamau', 
+                        grade: 'GRADE 5', 
+                        admissionNo: '2024/001', 
+                        admissionDate: '2024-01-10', 
+                        assessmentNo: 'ASN-001', 
+                        upiNo: 'UPI-789X', 
+                        stream: 'A', 
+                        parentContact: '0711222333', 
+                        selectedFees: ['t1', 't2', 't3'],
+                        status: 'active',
+                        religion: 'Christian',
+                        category: 'Normal'
+                    },
+                    { 
+                        id: '2', 
+                        name: 'Jane Wanjiku', 
+                        grade: 'GRADE 5', 
+                        admissionNo: '2024/002', 
+                        admissionDate: '2024-02-15', 
+                        assessmentNo: 'ASN-002', 
+                        upiNo: 'UPI-456Y', 
+                        stream: 'B', 
+                        parentContact: '0722333444', 
+                        selectedFees: ['t1', 't2', 't3'],
+                        status: 'active',
+                        religion: 'Christian',
+                        category: 'Normal'
+                    },
+                    { 
+                        id: '3', 
+                        name: 'Peter Ochieng', 
+                        grade: 'GRADE 6', 
+                        admissionNo: '2024/003', 
+                        admissionDate: '2024-01-20', 
+                        assessmentNo: 'ASN-003', 
+                        upiNo: 'UPI-123Z', 
+                        stream: 'A', 
+                        parentContact: '0733444555', 
+                        selectedFees: ['t1', 't2', 't3'],
+                        status: 'active',
+                        religion: 'Christian',
+                        category: 'Normal'
+                    }
+                ],
+                assessments: [
+                    { id: 'a1', studentId: '1', subject: 'Mathematics', level: 'EE', score: 85, date: '2024-03-20', term: 'T1', examType: 'CAT', academicYear: '2024/2025' },
+                    { id: 'a2', studentId: '1', subject: 'English', level: 'ME', score: 72, date: '2024-03-20', term: 'T1', examType: 'CAT', academicYear: '2024/2025' },
+                    { id: 'a3', studentId: '2', subject: 'Mathematics', level: 'EE', score: 90, date: '2024-03-20', term: 'T1', examType: 'CAT', academicYear: '2024/2025' }
+                ],
+                payments: [
+                    { id: 'p1', studentId: '1', amount: 20000, date: '2024-03-01', receiptNo: 'RCP-001', term: 'T1', type: 'School Fees', academicYear: '2024/2025' },
+                    { id: 'p2', studentId: '2', amount: 25000, date: '2024-03-05', receiptNo: 'RCP-002', term: 'T1', type: 'School Fees', academicYear: '2024/2025' }
+                ],
+                paymentPrompts: [],
+                teachers: [
+                    { id: 't1', name: 'Mr. Mwangi', contact: '0712345678', subjects: 'Mathematics, Science', grades: 'GRADE 5, GRADE 6', employeeNo: 'T-001' }
+                ],
+                staff: [
+                    { id: 's1', name: 'Alice Wambui', role: 'Bursar', contact: '0722000111', employeeNo: 'S-001' }
+                ],
+                remarks: [],
+                attendance: [],
+                transport: {
+                    routes: [
+                        { id: 'r1', name: 'Route A - City Center', fee: 5000 },
+                        { id: 'r2', name: 'Route B - Westlands', fee: 6500 }
+                    ],
+                    assignments: []
+                },
+                library: {
+                    books: [
+                        { id: 'b1', title: 'The River and the Source', author: 'Margaret Ogola', isbn: '978-9966-882-05-9', status: 'Available', quantity: 10 },
+                        { id: 'b2', title: 'Kidagaa Kimemwozea', author: 'Ken Walibora', isbn: '978-9966-10-142-2', status: 'Available', quantity: 5 }
+                    ],
+                    borrowings: []
+                },
+                inventory: {
+                    items: [
+                        { id: 'i1', name: 'Desk', category: 'Furniture', quantity: 100, condition: 'Good' }
+                    ]
+                },
+                payroll: [],
+                settings: {
+                    schoolName: 'Evergreen Academy',
+                    schoolAddress: '123 Academic Drive, Nairobi, Kenya',
+                    schoolLogo: 'school_logo.png',
+                    principalSignature: '',
+                    clerkSignature: '',
+                    academicYear: '2024/2025',
+                    currency: 'KES.',
+                    theme: 'light',
+                    primaryColor: '#2563eb',
+                    secondaryColor: '#64748b',
+                    weeksPerTerm: 12,
+                    termDates: {
+                        T1: { start: '2024-01-06', end: '2024-04-04' },
+                        T2: { start: '2024-04-22', end: '2024-08-08' },
+                        T3: { start: '2024-08-25', end: '2024-11-21' }
+                    },
+                    grades: ['BABY CLASS', 'PP1', 'PP2', 'GRADE 1', 'GRADE 2', 'GRADE 3', 'GRADE 4', 'GRADE 5', 'GRADE 6', 'GRADE 7', 'GRADE 8', 'GRADE 9'],
+                    streams: ['A', 'B', 'C'],
+                    hiddenFeeItems: {},
+                    customFeeColumns: [],
+                    feeStructures: [
+                        { grade: 'GRADE 5', t1: 25000, t2: 20000, t3: 20000, admission: 3000, diary: 500, development: 5000, boarding: 0, breakfast: 3500, lunch: 6000, trip: 2500, bookFund: 1500, caution: 2000, uniform: 5000, studentCard: 500, remedial: 2000, assessmentFee: 1500, projectFee: 1000, activityFees: 0, tieAndBadge: 0, academicSupport: 0, pta: 0 },
+                        { grade: 'GRADE 6', t1: 30000, t2: 25000, t3: 25000, admission: 3000, diary: 500, development: 5000, boarding: 0, breakfast: 4000, lunch: 7000, trip: 3000, bookFund: 2000, caution: 2000, uniform: 5500, studentCard: 500, remedial: 2500, assessmentFee: 2000, projectFee: 1500, activityFees: 0, tieAndBadge: 0, academicSupport: 0, pta: 0 }
+                    ],
+                    googleScriptUrl: ''
+                }
+            };
+            
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(testData));
+            addLog('Test data saved to localStorage');
+            
+            alert('✅ 3 test students injected!\n\nNow:\n1. Close this page\n2. Go back to your School Data app\n3. Refresh the page (F5)\n4. Students should appear!');
+            
+            checkData();
+        }
+
+        function clearAndReset() {
+            if (!confirm('This will clear ALL data and reset to defaults. Are you sure?')) return;
+            
+            addLog('Clearing all data...');
+            localStorage.removeItem(STORAGE_KEY);
+            addLog('Data cleared - will use defaults on next load');
+            alert('Data cleared. When you open the main app, it will load default sample data.');
+            checkData();
+        }
+
+        function clearLocalStorage() {
+            if (!confirm('Clear localStorage? This will remove all school data.')) return;
+            localStorage.removeItem(STORAGE_KEY);
+            addLog('localStorage cleared');
+            checkData();
+        }
+
+        function toggleRawData() {
+            const pre = document.getElementById('rawData');
+            if (pre.style.display === 'none') {
+                if (window.currentData) {
+                    pre.textContent = JSON.stringify(window.currentData, null, 2);
+                }
+                pre.style.display = 'block';
+            } else {
+                pre.style.display = 'none';
+            }
+        }
+
+        // Run on load
+        checkData();
+    </script>
+</body>
+</html>

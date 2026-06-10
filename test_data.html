@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Check LocalStorage Data</title>
+</head>
+<body>
+    <h1>LocalStorage Data Check</h1>
+    <button onclick="checkData()">Check Data</button>
+    <button onclick="clearData()">Clear All Data</button>
+    <pre id="output"></pre>
+    
+    <script>
+        function checkData() {
+            const data = localStorage.getItem('edutrack_cbc_data');
+            const output = document.getElementById('output');
+            
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    output.textContent = JSON.stringify(parsed, null, 2);
+                    console.log('Data found:', parsed);
+                } catch (e) {
+                    output.textContent = 'Error parsing data: ' + e.message;
+                }
+            } else {
+                output.textContent = 'No data found in localStorage';
+                console.log('No data in localStorage');
+            }
+        }
+        
+        function clearData() {
+            if (confirm('Clear all localStorage data?')) {
+                localStorage.removeItem('edutrack_cbc_data');
+                document.getElementById('output').textContent = 'Data cleared';
+            }
+        }
+        
+        // Auto-check on load
+        checkData();
+    </script>
+</body>
+</html>

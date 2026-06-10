@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reset School Data</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        button { padding: 10px 20px; margin: 10px; font-size: 16px; cursor: pointer; }
+        .success { color: green; }
+        .error { color: red; }
+        pre { background: #f0f0f0; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>School Data Reset</h1>
+    
+    <button onclick="resetToDefaults()">Reset to Default Data</button>
+    <button onclick="checkCurrentData()">Check Current Data</button>
+    <button onclick="clearAllData()">Clear All Data</button>
+    
+    <div id="message"></div>
+    <pre id="output"></pre>
+    
+    <script>
+        const STORAGE_KEY = 'edutrack_cbc_data';
+        
+        const defaultData = {
+            archives: [],
+            students: [
+                { id: '1', name: 'John Doe', grade: 'GRADE 1', admissionNo: '2024/001', admissionDate: '2024-01-10', assessmentNo: 'ASN-001', upiNo: 'UPI-789X', stream: 'A', parentContact: '0711222333', selectedFees: ['t1', 't2', 't3', 'bookFund', 'caution', 'studentCard'], status: 'active' },
+                { id: '2', name: 'Jane Smith', grade: 'GRADE 2', admissionNo: '2024/002', admissionDate: '2024-02-15', assessmentNo: 'ASN-002', upiNo: 'UPI-456Y', stream: 'B', parentContact: '0722333444', selectedFees: ['t1', 't2', 't3', 'breakfast', 'lunch'], status: 'active' },
+                { id: '3', name: 'Peter Kamau', grade: 'GRADE 3', admissionNo: '2024/003', admissionDate: '2024-01-20', assessmentNo: 'ASN-003', upiNo: 'UPI-123Z', stream: 'C', parentContact: '0733444555', selectedFees: ['t1', 't2', 't3'], status: 'active' }
+            ],
+            assessments: [
+                { id: 'a1', studentId: '1', subject: 'Mathematics', level: 'EE', score: 85, date: '2024-03-20', term: 'T1', examType: 'CAT' },
+                { id: 'a2', studentId: '1', subject: 'English Language', level: 'ME', score: 72, date: '2024-03-20', term: 'T1', examType: 'CAT' },
+                { id: 'a3', studentId: '2', subject: 'Mathematics', level: 'EE', score: 90, date: '2024-03-20', term: 'T1', examType: 'CAT' }
+            ],
+            payments: [
+                { id: 'p1', studentId: '1', amount: 20000, date: '2024-03-01', receiptNo: 'RCP-001', term: 'T1', type: 'School Fees' },
+                { id: 'p2', studentId: '2', amount: 25000, date: '2024-03-05', receiptNo: 'RCP-002', term: 'T1', type: 'School Fees' }
+            ],
+            paymentPrompts: [],
+            teachers: [
+                { id: 't1', name: 'Peter Mwangi', contact: '0712345678', subjects: 'Mathematics, Science', grades: 'GRADE 1, GRADE 2', employeeNo: 'T-001', nssfNo: 'NSSF-123', shifNo: 'SHIF-456', taxNo: 'A001234567X' }
+            ],
+            staff: [
+                { id: 's1', name: 'Alice Wambui', role: 'Bursar', contact: '0722000111', employeeNo: 'S-001', nssfNo: 'NSSF-789', shifNo: 'SHIF-012', taxNo: 'A009876543Z' }
+            ],
+            remarks: [],
+            attendance: [],
+            transport: {
+                routes: [
+                    { id: 'r1', name: 'Route A - City Center', fee: 5000 },
+                    { id: 'r2', name: 'Route B - Westlands', fee: 6500 }
+                ],
+                assignments: []
+            },
+            library: {
+                books: [
+                    { id: 'b1', title: 'The River and the Source', author: 'Margaret Ogola', isbn: '978-9966-882-05-9', status: 'Available', quantity: 10 },
+                    { id: 'b2', title: 'Kidagaa Kimemwozea', author: 'Ken Walibora', isbn: '978-9966-10-142-2', status: 'Available', quantity: 5 }
+                ],
+                borrowings: []
+            },
+            inventory: {
+                items: [
+                    { id: 'i1', name: 'Desk', category: 'Furniture', quantity: 100, condition: 'Good' },
+                    { id: 'i2', name: 'Chair', category: 'Furniture', quantity: 100, condition: 'Good' }
+                ]
+            },
+            settings: {
+                schoolName: 'Evergreen Academy',
+                schoolAddress: '123 Academic Drive, Nairobi, Kenya',
+                schoolLogo: 'school_logo.png',
+                principalSignature: '',
+                clerkSignature: '',
+                academicYear: '2025/2026',
+                currency: 'KES.',
+                theme: 'light',
+                primaryColor: '#2563eb',
+                secondaryColor: '#64748b',
+                weeksPerTerm: 12,
+                termDates: {
+                    T1: { start: '2025-01-06', end: '2025-04-04' },
+                    T2: { start: '2025-04-22', end: '2025-08-08' },
+                    T3: { start: '2025-08-25', end: '2025-11-21' }
+                },
+                grades: ['PP1', 'PP2', 'GRADE 1', 'GRADE 2', 'GRADE 3', 'GRADE 4', 'GRADE 5', 'GRADE 6', 'GRADE 7', 'GRADE 8', 'GRADE 9', 'GRADE 10', 'GRADE 11', 'GRADE 12'],
+                streams: ['A', 'B', 'C'],
+                feeStructures: [
+                    { grade: 'GRADE 1', t1: 25000, t2: 20000, t3: 20000, admission: 3000, diary: 500, development: 5000, boarding: 15000, breakfast: 3500, lunch: 6000, trip: 2500, bookFund: 1500, caution: 2000, uniform: 5000, studentCard: 500, remedial: 2000, assessmentFee: 1500, projectFee: 1000, activityFees: 0, tieAndBadge: 0, academicSupport: 0, pta: 0 }
+                ]
+            }
+        };
+        
+        function showMessage(msg, isError = false) {
+            const message = document.getElementById('message');
+            message.innerHTML = `<div class="${isError ? 'error' : 'success'}">${msg}</div>`;
+            setTimeout(() => message.innerHTML = '', 5000);
+        }
+        
+        function checkCurrentData() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            const output = document.getElementById('output');
+            
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    output.textContent = JSON.stringify(parsed, null, 2);
+                    showMessage(`Data found: ${parsed.students?.length || 0} students, ${parsed.assessments?.length || 0} assessments`);
+                } catch (e) {
+                    output.textContent = 'Error parsing data: ' + e.message;
+                    showMessage('Error parsing data', true);
+                }
+            } else {
+                output.textContent = 'No data found in localStorage';
+                showMessage('No data in localStorage', true);
+            }
+        }
+        
+        function resetToDefaults() {
+            if (confirm('Reset all data to default sample data? This will replace any existing data.')) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultData));
+                showMessage('Data reset to defaults successfully!');
+                checkCurrentData();
+            }
+        }
+        
+        function clearAllData() {
+            if (confirm('Clear ALL data from localStorage? This cannot be undone.')) {
+                localStorage.removeItem(STORAGE_KEY);
+                showMessage('All data cleared');
+                document.getElementById('output').textContent = 'No data in localStorage';
+            }
+        }
+        
+        // Auto-check on load
+        checkCurrentData();
+    </script>
+</body>
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EduTrack CBC Pro</title>
+    <script>
+        const originalWarn = console.warn;
+        console.warn = function (...args) {
+            if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com should not be used in production')) return;
+            originalWarn.apply(console, args);
+        };
+
+        function showStartupError(title, details) {
+            const app = document.getElementById('app');
+            if (!app) return;
+            app.innerHTML = `
+                <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:#f8fafc;font-family:Inter,sans-serif;">
+                    <div style="max-width:760px;width:100%;background:#fff;border:1px solid #fecaca;border-radius:16px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,0.08);">
+                        <h1 style="margin:0 0 12px;font-size:20px;font-weight:800;color:#991b1b;">${title}</h1>
+                        <p style="margin:0 0 12px;color:#7f1d1d;font-size:14px;">The app hit an error before it could finish loading.</p>
+                        <pre style="margin:0;white-space:pre-wrap;word-break:break-word;background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:16px;color:#9a3412;font-size:12px;overflow:auto;">${details}</pre>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.addEventListener('error', function (event) {
+            const details = event?.error?.stack || event?.message || 'Unknown startup error';
+            showStartupError('Application Failed To Start', details);
+        });
+
+        window.addEventListener('unhandledrejection', function (event) {
+            const reason = event?.reason;
+            const details = reason?.stack || reason?.message || String(reason || 'Unknown promise rejection');
+            showStartupError('Application Failed To Start', details);
+        });
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <script type="importmap">
+        {
+            "imports": {
+                "lucide": "https://esm.sh/lucide@0.447.0",
+                "preact": "https://esm.sh/preact@10.19.2",
+                "preact/hooks": "https://esm.sh/preact@10.19.2/hooks",
+                "htm": "https://esm.sh/htm@3.1.1",
+                "clsx": "https://esm.sh/clsx@2.0.0",
+                "chart.js": "https://esm.sh/chart.js/auto"
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            height: 4px;
+            width: 4px;
+        }
+
+        .no-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .no-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: auto;
+            scrollbar-width: thin;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+
+            .print-only {
+                display: block !important;
+            }
+
+            body,
+            html {
+                height: auto !important;
+                overflow: visible !important;
+                background-color: white !important;
+                color: black !important;
+            }
+
+            main {
+                overflow: visible !important;
+                position: static !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            #app {
+                height: auto !important;
+                overflow: visible !important;
+            }
+
+            .h-screen {
+                height: auto !important;
+            }
+
+            .card-shadow {
+                box-shadow: none !important;
+                border: 1px solid #000 !important;
+            }
+
+            .page-break {
+                break-before: page;
+                page-break-before: always;
+            }
+
+            .report-page-break {
+                break-before: page;
+                page-break-before: always;
+            }
+
+            .overflow-x-auto {
+                overflow-x: visible !important;
+            }
+
+            .no-scrollbar {
+                overflow: visible !important;
+                -ms-overflow-style: auto !important;
+                scrollbar-width: auto !important;
+            }
+
+            .sticky {
+                position: static !important;
+            }
+            @page {
+                margin: 10mm;
+            }
+
+            table {
+                min-width: auto !important;
+                width: 100% !important;
+            }
+
+            th,
+            td {
+                white-space: normal !important;
+            }
+
+            /* Analysis table specific fixes */
+            .analysis-table {
+                min-width: auto !important;
+                font-size: 8px !important;
+            }
+
+            .analysis-table th,
+            .analysis-table td {
+                padding: 4px !important;
+            }
+
+            .report-page-break {
+                margin-top: 0 !important;
+                padding-top: 0 !important;
+            }
+
+            /* Keep printed text legible while allowing color printing where supported */
+            * {
+                color: black !important;
+                border-color: #333 !important;
+            }
+
+            .text-slate-400,
+            .text-slate-500,
+            .text-slate-300 {
+                color: #000 !important;
+            }
+
+            .bg-slate-50,
+            .bg-slate-100 {
+                background-color: transparent !important;
+            }
+
+            /* Keep background colors for charts where needed */
+            .marklist-graph,
+            .marklist-bar,
+            img,
+            .print-only img {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .print-only img {
+                display: block;
+                margin: 0 auto;
+            }
+
+            .max-w-6xl {
+                max-width: 100% !important;
+            }
+
+            .timetable-grid {
+                display: grid;
+                grid-template-columns: 80px repeat(5, 1fr);
+            }
+
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* Global Print Contrast Fix */
+            @media print {
+                .bg-slate-900 {
+                    background-color: #f8fafc !important;
+                    color: #0f172a !important;
+                    border: 1px solid #e2e8f0 !important;
+                }
+                .text-white {
+                    color: #0f172a !important;
+                }
+                .opacity-60 {
+                    opacity: 1 !important;
+                    color: #64748b !important;
+                }
+            }
+
+            /* ==============================
+               PRINT COMPLETE TABLE FIX:
+               Screen-only tbody rows are hidden on print;
+               Print-only tbody rows are shown on print.
+               This ensures ALL data prints regardless of pagination.
+               ============================== */
+
+            /* Hide screen pagination rows during print */
+            .students-print-table tbody.marklist-screen-rows,
+            tbody.marklist-screen-rows,
+            tbody.teachers-screen-rows,
+            tbody.staff-screen-rows {
+                display: none !important;
+            }
+
+            /* Show full-data print tbodys during print */
+            .students-print-table tbody.students-print-rows,
+            tbody.marklist-print-rows,
+            tbody.teachers-print-rows,
+            tbody.staff-print-rows {
+                display: table-row-group !important;
+            }
+
+            /* Also hide the first (paginated) tbody of students-print-table on print */
+            .students-print-table tbody:not(.students-print-rows) {
+                display: none !important;
+            }
+
+            /* Hide pagination controls */
+            .no-print {
+                display: none !important;
+            }
+
+            /* Professional styling for printed student tables */
+            .students-print-table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                border-radius: 0 !important;
+                break-inside: auto; /* Allow table to split across pages */
+            }
+            .students-print-table thead {
+                display: table-header-group; /* Repeats header on every printed page */
+            }
+            .students-print-table tr {
+                break-inside: avoid; /* Prevent row splitting across pages */
+                page-break-inside: avoid;
+            }
+            .students-print-table th,
+            .students-print-table td {
+                border: 1px solid #cbd5e1 !important;
+                padding: 6px 8px !important;
+                font-size: 11px !important;
+                color: #0f172a !important;
+            }
+            .students-print-table th {
+                background-color: #f1f5f9 !important;
+                font-weight: 800 !important;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                text-align: left;
+            }
+            /* Subtle striped rows for print readability */
+            .students-print-table tbody.students-print-rows tr:nth-child(even) td {
+                background-color: #f8fafc !important;
+            }
+            /* Clean up UI badges intended for screen */
+            .students-print-table td .bg-slate-200,
+            .students-print-table td .rounded,
+            .students-print-table td .bg-blue-50 {
+                background-color: transparent !important;
+                border: none !important;
+                padding: 0 !important;
+            }
+
+            /* Compact student report printing to avoid extra blank pages */
+            .student-report-sheet {
+                break-inside: auto;
+                page-break-inside: auto;
+            }
+
+            .student-report-summary {
+                gap: 4px !important;
+                margin-top: 6px !important;
+            }
+
+            .student-report-summary > div {
+                padding: 4px !important;
+            }
+
+            .student-report-table {
+                table-layout: fixed !important;
+            }
+
+            .student-report-table th,
+            .student-report-table td {
+                padding: 4px !important;
+                font-size: 9px !important;
+                line-height: 1.15 !important;
+            }
+
+            .student-report-page2-table th,
+            .student-report-page2-table td {
+                padding: 4px !important;
+                font-size: 9px !important;
+                line-height: 1.15 !important;
+            }
+
+            .student-report-insights {
+                display: none !important;
+            }
+
+            .student-report-comments,
+            .student-report-comments > div,
+            .student-report-insights > div {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            .student-report-page2 {
+                margin-top: 0 !important;
+                padding-top: 4px !important;
+            }
+
+            .student-report-footer {
+                margin-top: 8px !important;
+                padding-top: 4px !important;
+            }
+
+            .student-report-comment-text {
+                min-height: 34px !important;
+                max-height: 34px !important;
+                margin-bottom: 6px !important;
+                padding-bottom: 4px !important;
+            }
+
+            .student-report-comments .h-10 {
+                height: 28px !important;
+            }
+
+            .student-report-comments .w-24 {
+                width: 72px !important;
+            }
+
+            /* Scale termly reports to fit on 1 A4 page */
+            .student-report-sheet {
+                transform: scale(0.85);
+                transform-origin: top center;
+                width: 117% !important; /* Compensate for scale to use full width */
+                margin-left: -8.5% !important;
+            }
+            
+            /* Alternative: Use zoom for better browser support */
+            @supports (zoom: 1) {
+                .student-report-sheet {
+                    zoom: 0.85;
+                    transform: none;
+                    width: 100% !important;
+                    margin-left: 0 !important;
+                }
+            }
+            
+            /* Ensure page breaks don't occur within report */
+            .student-report-container {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            
+            /* Compact graphs for single page */
+            .student-report-graph {
+                max-height: 120px !important;
+            }
+            .student-report-graph canvas,
+            .student-report-graph svg {
+                max-height: 110px !important;
+            }
+
+            .assessment-records-table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+            }
+
+            .assessment-records-table thead {
+                display: table-header-group;
+            }
+
+            .assessment-records-table tr {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            .assessment-records-table th,
+            .assessment-records-table td {
+                border: 1px solid #cbd5e1 !important;
+                padding: 6px 8px !important;
+                font-size: 11px !important;
+                color: #0f172a !important;
+            }
+
+            .assessment-records-table th {
+                background-color: #f8fafc !important;
+                font-weight: 800 !important;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+
+            body.print-receipt-only .print-section-table {
+                display: none !important;
+            }
+
+            body.print-table-only .print-section-receipt {
+                display: none !important;
+            }
+
+            /* Fix for wide tables in print */
+            .marklist-container, .analysis-container, .fees-container, .feesregister-container, 
+            .attendance-container, .seniorschool-container, .payroll-container, .library-container,
+            .timetable-container, .transport-container, .assessments-container {
+                width: 100% !important;
+                overflow: visible !important;
+            }
+
+            table {
+                table-layout: auto !important;
+                width: 100% !important;
+            }
+        }
+
+        .print-only {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-slate-900 h-screen overflow-hidden">
+    <div id="app" class="h-full"></div>
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>
