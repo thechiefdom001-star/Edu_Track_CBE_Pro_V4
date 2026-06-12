@@ -912,7 +912,7 @@ export const Students = ({ data, setData, onSelectStudent, isAdmin, teacherSessi
                                 CSS hides the screen-subset and shows the full-list tbody */
                             paginatedStudents
                         ).map((student, idx) => html`
-                            <tr key=${student.id} class="hover:bg-slate-100 transition-colors even:bg-slate-50 students-screen-row ${student.status === 'left' ? 'opacity-60 bg-red-50' : ''}">
+                            <tr key=${student.id} class="hover:bg-cyan-100 transition-colors even:bg-cyan-50 students-screen-row ${student.status === 'left' ? 'opacity-60 bg-red-50' : ''}">
                                 <td class="px-6 py-4 text-slate-400 text-xs font-mono">${(currentPage - 1) * STUDENTS_PER_PAGE + idx + 1}</td>
                                 <td class="px-6 py-4">
                                     ${student.portrait ? html`
@@ -1002,7 +1002,7 @@ export const Students = ({ data, setData, onSelectStudent, isAdmin, teacherSessi
                     
                     <tbody class="students-print-rows" style="display:none">
                         ${filteredStudents.map((student, idx) => html`
-                            <tr key=${`print-${student.id}`} class="even:bg-slate-50">
+                            <tr key=${`print-${student.id}`} class="even:bg-cyan-50">
                                 <td class="px-4 py-2 text-slate-400 text-xs font-mono">${idx + 1}</td>
                                 <td class="px-4 py-2">
                                     ${student.portrait ? html`

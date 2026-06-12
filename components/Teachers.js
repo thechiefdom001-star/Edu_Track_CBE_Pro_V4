@@ -375,7 +375,7 @@ export const Teachers = ({ data = {}, setData = () => {} }) => {
                         </thead>
                         <tbody class="divide-y divide-slate-50 teachers-screen-rows">
                             ${paginatedTeachers.map(t => html`
-                                <tr key=${t.id} class="hover:bg-slate-100 transition-colors even:bg-slate-50">
+                                <tr key=${t.id} class="hover:bg-cyan-100 transition-colors even:bg-cyan-50">
                                     <td class="px-6 py-4">
                                         <div class="font-bold text-sm">${t.name}</div>
                                         ${t.isClassTeacher ? html`
@@ -415,7 +415,7 @@ export const Teachers = ({ data = {}, setData = () => {} }) => {
                         
                         <tbody class="divide-y divide-slate-50 teachers-print-rows" style="display:none">
                             ${teachers.map(t => html`
-                                <tr key=${t.id} class="hover:bg-slate-100 transition-colors even:bg-slate-50">
+                                <tr key=${t.id} class="hover:bg-cyan-100 transition-colors even:bg-cyan-50">
                                     <td class="px-6 py-4">
                                         <div class="font-bold text-sm">${t.name}</div>
                                         ${t.isClassTeacher ? html`

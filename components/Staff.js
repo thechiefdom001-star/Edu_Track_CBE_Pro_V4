@@ -248,7 +248,7 @@ export const Staff = ({ data, setData }) => {
                     </thead>
                     <tbody class="divide-y divide-slate-50 staff-screen-rows">
                         ${paginatedStaff.map(s => html`
-                            <tr key=${s.id} class="hover:bg-slate-100 transition-colors even:bg-slate-50">
+                            <tr key=${s.id} class="hover:bg-cyan-100 transition-colors even:bg-cyan-50">
                                 <td class="px-6 py-4">
                                     <div class="font-bold text-sm">${s.name}</div>
                                     <div class="text-[10px] text-slate-400 uppercase font-medium">ID: ${s.employeeNo || s.id}</div>
@@ -270,7 +270,7 @@ export const Staff = ({ data, setData }) => {
                     
                     <tbody class="divide-y divide-slate-50 staff-print-rows" style="display:none">
                         ${staffList.map(s => html`
-                            <tr key=${s.id} class="hover:bg-slate-100 transition-colors even:bg-slate-50">
+                            <tr key=${s.id} class="hover:bg-cyan-100 transition-colors even:bg-cyan-50">
                                 <td class="px-6 py-4">
                                     <div class="font-bold text-sm">${s.name}</div>
                                     <div class="text-[10px] text-slate-400 uppercase font-medium">ID: ${s.employeeNo || s.id}</div>

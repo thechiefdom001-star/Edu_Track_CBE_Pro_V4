@@ -257,7 +257,7 @@ export const Payroll = ({ data, setData }) => {
                         ${tableRows.map(({ staff, entry }, i) => {
                             const d = entry?.extraDeductions || {};
                             return html`
-                            <tr key=${staff.id} class="hover:bg-blue-50/30 transition-colors even:bg-slate-50/50">
+                            <tr key=${staff.id} class="hover:bg-cyan-100 transition-colors even:bg-cyan-50">
                                 <td class="px-3 py-3 text-slate-400 font-mono text-[10px]">${i + 1}</td>
                                 <td class="px-3 py-3">
                                     <div class="font-bold text-slate-800 whitespace-nowrap">${staff.name}</div>

@@ -301,7 +301,7 @@ export const Marklist = ({ data = {}, setData = () => { }, isAdmin, teacherSessi
                         ${classStudents.map(student => {
         const remark = remarksList.find(r => r.studentId === student.id) || { teacher: '', principal: '' };
         return html`
-                                <tr key=${`print-${student.id}`} class="even:bg-slate-50">
+                                <tr key=${`print-${student.id}`} class="even:bg-cyan-50">
                                     <td class="px-4 py-2 border-r">
                                         <div class="font-bold text-sm">${student.name}</div>
                                         <div class="text-[9px] text-slate-400 uppercase">${student.admissionNo || '-'}</div>

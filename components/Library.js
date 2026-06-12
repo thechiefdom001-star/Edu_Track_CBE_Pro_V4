@@ -267,7 +267,7 @@ export const Library = ({ data, setData }) => {
                                                (book.isbn && book.isbn.toLowerCase().includes(searchLower));
                                     })
                                     .map(book => html`
-                                    <tr key=${book.id} class="hover:bg-slate-100 even:bg-slate-50">
+                                    <tr key=${book.id} class="hover:bg-cyan-100 even:bg-cyan-50">
                                         <td class="px-6 py-4">
                                             <div class="font-bold text-sm">${book.title}</div>
                                             <div class="text-[10px] text-slate-400 uppercase">By ${book.author}</div>

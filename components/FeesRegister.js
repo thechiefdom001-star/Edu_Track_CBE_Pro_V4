@@ -219,7 +219,7 @@ export const FeesRegister = ({ data }) => {
                         
                         <tbody class="divide-y divide-slate-100 hidden print:table-row-group">
                             ${filteredData.map((s, i) => html`
-                                <tr key=${s.id} class="even:bg-slate-50">
+                                <tr key=${s.id} class="even:bg-cyan-50">
                                     <td class="px-6 py-3 text-xs text-slate-400 font-mono">${i + 1}</td>
                                     <td class="px-6 py-3">
                                         <div class="font-bold text-sm">${s.name}</div>

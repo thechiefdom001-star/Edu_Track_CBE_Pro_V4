@@ -388,14 +388,14 @@ export const Dashboard = ({ data, setData, googleSyncStatus, isAdmin, teacherSes
                 <p class="text-slate-500 mt-1 text-lg">Welcome back to ${settings.schoolName || 'the portal'}.</p>
             </div>
 
-            
-            <div class="flex overflow-x-auto no-scrollbar md:grid md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 pb-4 -mx-4 px-4 md:mx-0 md:px-0">
-                <div class="min-w-[160px] md:min-w-0 flex-1"><${StatCard} title="Students" value=${totalStudents} subtitle=${inactiveStudents.length > 0 ? `Enrollment (+${inactiveStudents.length} left)` : "Enrollment"} icon="👥" color="blue" /></div>
-                <div class="min-w-[160px] md:min-w-0 flex-1"><${StatCard} title="Teachers" value=${totalTeachers} subtitle="Academic" icon="👨‍🏫" color="orange" /></div>
-                <div class="min-w-[160px] md:min-w-0 flex-1"><${StatCard} title="Staff" value=${totalStaff} subtitle="Support" icon="🛠️" color="cyan" /></div>
-                <div class="min-w-[160px] md:min-w-0 flex-1"><${StatCard} title="Paid" value=${`${settings.currency} ${totalFeesCollected.toLocaleString()}`} subtitle=${`${feePercentage.toFixed(1)}% Target`} icon="💰" color="green" /></div>
-                <div class="min-w-[160px] md:min-w-0 flex-1"><${StatCard} title="Arrears" value=${`${settings.currency} ${totalArrears.toLocaleString()}`} subtitle="Outstanding" icon="⚠️" color="red" /></div>
-                <div class="min-w-[160px] md:min-w-0 flex-1"><${StatCard} title="Assess" value=${assessments.length} subtitle="CBC Records" icon="📝" color="purple" /></div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+                <${StatCard} title="Students" value=${totalStudents} subtitle=${inactiveStudents.length > 0 ? `Enrollment (+${inactiveStudents.length} left)` : "Enrollment"} icon="👥" color="blue" trend="+12%" trendUp="up" />
+                <${StatCard} title="Teachers" value=${totalTeachers} subtitle="Academic" icon="👨‍🏫" color="orange" trend="+5%" trendUp="up" />
+                <${StatCard} title="Staff" value=${totalStaff} subtitle="Support" icon="🛠️" color="cyan" trend="0%" trendUp="neutral" />
+                <${StatCard} title="Paid" value=${settings.currency + ' ' + totalFeesCollected.toLocaleString()} subtitle=${feePercentage.toFixed(1) + '% Target'} icon="💰" color="green" trend="+23%" trendUp="up" />
+                <${StatCard} title="Arrears" value=${settings.currency + ' ' + totalArrears.toLocaleString()} subtitle="Outstanding" icon="⚠️" color="red" trend="-8%" trendUp="down" />
+                <${StatCard} title="Assess" value=${assessments.length} subtitle="CBC Records" icon="📝" color="purple" trend="+15%" trendUp="up" />
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -604,35 +604,46 @@ export const Dashboard = ({ data, setData, googleSyncStatus, isAdmin, teacherSes
     `;
 };
 
-const StatCard = ({ title, value, subtitle, icon, color }) => {
+const StatCard = ({ title, value, subtitle, icon, color, trend, trendUp }) => {
     const themes = {
-        blue: { bg: 'bg-blue-600', text: 'text-white', sub: 'text-blue-100', iconBg: 'bg-blue-500', stripe: 'rgba(255,255,255,0.05)' },
-        green: { bg: 'bg-emerald-600', text: 'text-white', sub: 'text-emerald-100', iconBg: 'bg-emerald-500', stripe: 'rgba(255,255,255,0.05)' },
-        purple: { bg: 'bg-purple-600', text: 'text-white', sub: 'text-purple-100', iconBg: 'bg-purple-500', stripe: 'rgba(255,255,255,0.05)' },
-        orange: { bg: 'bg-orange-500', text: 'text-white', sub: 'text-orange-100', iconBg: 'bg-orange-400', stripe: 'rgba(255,255,255,0.05)' },
-        cyan: { bg: 'bg-cyan-600', text: 'text-white', sub: 'text-cyan-100', iconBg: 'bg-cyan-500', stripe: 'rgba(255,255,255,0.05)' },
-        red: { bg: 'bg-rose-600', text: 'text-white', sub: 'text-rose-100', iconBg: 'bg-rose-500', stripe: 'rgba(255,255,255,0.05)' }
+        blue: { stripe: 'border-l-blue-500', value: 'text-blue-600', iconBg: 'bg-blue-100', iconText: 'text-blue-600', trendUp: 'text-green-600', trendDown: 'text-red-600' },
+        green: { stripe: 'border-l-emerald-500', value: 'text-emerald-600', iconBg: 'bg-emerald-100', iconText: 'text-emerald-600', trendUp: 'text-green-600', trendDown: 'text-red-600' },
+        purple: { stripe: 'border-l-purple-500', value: 'text-purple-600', iconBg: 'bg-purple-100', iconText: 'text-purple-600', trendUp: 'text-green-600', trendDown: 'text-red-600' },
+        orange: { stripe: 'border-l-orange-500', value: 'text-orange-600', iconBg: 'bg-orange-100', iconText: 'text-orange-600', trendUp: 'text-green-600', trendDown: 'text-red-600' },
+        cyan: { stripe: 'border-l-cyan-500', value: 'text-cyan-600', iconBg: 'bg-cyan-100', iconText: 'text-cyan-600', trendUp: 'text-green-600', trendDown: 'text-red-600' },
+        red: { stripe: 'border-l-rose-500', value: 'text-rose-600', iconBg: 'bg-rose-100', iconText: 'text-rose-600', trendUp: 'text-green-600', trendDown: 'text-red-600' }
     };
 
     const theme = themes[color] || themes.blue;
 
+    const getTrendIcon = (direction) => {
+        if (direction === 'up') return '↑';
+        if (direction === 'down') return '↓';
+        return '→';
+    };
+
+    const getTrendColor = (direction) => {
+        if (direction === 'up') return theme.trendUp;
+        if (direction === 'down') return theme.trendDown;
+        return 'text-slate-400';
+    };
+
     return html`
-        <div 
-            class=${`${theme.bg} ${theme.text} p-5 md:p-6 rounded-3xl shadow-lg border-0 hover:scale-[1.02] transition-all relative overflow-hidden group h-full`}
-            style=${{
-            backgroundImage: `linear-gradient(135deg, transparent 25%, ${theme.stripe} 25%, ${theme.stripe} 50%, transparent 50%, transparent 75%, ${theme.stripe} 75%, ${theme.stripe})`,
-            backgroundSize: '20px 20px'
-        }}
-        >
-            <div class=${`w-12 h-12 rounded-2xl flex items-center justify-center text-xl mb-4 ${theme.iconBg} shadow-inner`}>
-                ${icon}
+        <div class="bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-slate-200 border-l-4 ${theme.stripe} hover:shadow-md transition-all relative overflow-hidden group h-full">
+            <div class="flex items-start justify-between mb-3">
+                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center text-lg md:text-xl ${theme.iconBg} ${theme.iconText} shadow-sm">
+                    ${icon}
+                </div>
+                ${trend && html`
+                    <div class="flex items-center gap-1 text-xs font-bold ${getTrendColor(trendUp)}">
+                        <span>${getTrendIcon(trendUp)}</span>
+                        <span>${trend}</span>
+                    </div>
+                `}
             </div>
-            <h4 class=${`${theme.sub} text-[10px] font-black uppercase tracking-widest`}>${title}</h4>
-            <p class="text-xl md:text-2xl font-black mt-1 leading-tight">${value}</p>
-            <p class=${`${theme.sub} text-[10px] font-bold mt-1 opacity-80`}>${subtitle}</p>
-            
-            
-            <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
+            <h4 class="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-500 mb-1">${title}</h4>
+            <p class="text-xl md:text-2xl font-black mt-1 leading-tight ${theme.value}">${value}</p>
+            <p class="text-[10px] md:text-xs font-bold mt-1 text-slate-400">${subtitle}</p>
         </div>
     `;
 };

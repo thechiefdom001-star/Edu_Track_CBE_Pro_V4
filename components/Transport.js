@@ -209,7 +209,7 @@ export const Transport = ({ data, setData }) => {
                             const student = (data.students || []).find(s => String(s.id) === String(a.studentId));
                             const route = transport.routes.find(r => r.id === a.routeId);
                             return html`
-                                <tr class="hover:bg-slate-100 even:bg-slate-50">
+                                <tr class="hover:bg-cyan-100 even:bg-cyan-50">
                                     <td class="px-6 py-4 font-medium text-sm">${student?.name || 'Unknown'}</td>
                                     <td class="px-6 py-4 text-slate-600 text-sm">${route?.name || 'None'}</td>
                                     <td class="px-6 py-4 font-bold text-sm">${data.settings.currency} ${route?.fee || 0}</td>

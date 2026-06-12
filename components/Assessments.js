@@ -875,7 +875,7 @@ export const Assessments = ({ data, setData, isAdmin, teacherSession, allowedSub
                                     .slice().reverse().map(assessment => {
                                         const student = findStudentForAssessment(assessment);
                                         return html`
-                                            <tr key=${assessment.id} class="hover:bg-slate-100 transition-colors even:bg-slate-50">
+                                            <tr key=${assessment.id} class="hover:bg-cyan-100 transition-colors even:bg-cyan-50">
                                                 <td class="px-6 py-4">
                                                     <div class="font-bold text-sm text-slate-800">${student?.name || assessment.studentName || 'Unknown'}</div>
                                                     <div class="text-[10px] text-slate-400 uppercase">${student?.admissionNo || assessment.studentAdmissionNo || '-'}</div>
